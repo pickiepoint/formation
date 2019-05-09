@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1> Bonjour </h1>
+    <div id="coucou"> </div>
+</body>
+
+<script>
+
+    //Instanciation
+    const req = new XMLHttpRequest();
+
+    function maProgression(event) {
+
+        // L'argument event va contenir deux propriétés intéressantes :
+        // event.loaded : nous indique la quantité de d'octets téléchargés.
+        // event.total : la quantité d'octets totale attendue.
+        // Nous affichons ça dans la console.
+        // MAIS, MAIS, MAIS !!! Au préalable nous allons vérifier que des données
+        // existent sinon nous aurons une belle erreur d'execution.
+
+        if (event.lengthComputable) {
+            console.log("Données totales : ", event.total);
+            console.log("Données reçues : ", event.loaded);
+        } else {
+            console.log("Pas de données calculables");
+        }
+    }
+
+    req.onprogress = maProgression;
+
+    function monErreur(event) {
+        // Cette fonction sera appellée uniquement en cas d'erreur de la requête.
+        // Il nous suffit d'indiquer l'erreur dans la console pour en savoir plus.
+        console.error("Erreur", event.target.status);
+    }
+
+    req.onerror = monErreur;
+
+
+    function enCours(event) {
+        // On test directement le status de notre instance de XMLHttpRequest
+        if (this.status === 200) {
+            // Tout baigne, voici le contenu de la réponse
+            console.log("Contenu", this.responseText);
+
+            // injection du contenu dans notre div coucou
+            const coucou = document.getElementById("coucou");
+            coucou.innerHTML = this.responseText;
+
+
+        } else {
+            // On y est pas encore, voici le statut actuel
+            console.log("Statut actuel", this.status, this.statusText);
+        }
+    }
+
+    req.onload = enCours;
+
+    //Préparation de la requête
+    req.open("POST", "http://www.neore.fr/coucou.php", true);
+
+    //
+    req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    //Execution de la requête
+    req.send("nom=myriam");
+
+
+    if (req.status === 200) {
+        //yeah! super nous avons un code de réponse ok
+        //voyons le contenu de la réponse dans la console
+        console.log(req.status);
+        console.log(req.statusText);
+        console.log(req.responseText);
+
+
+    } else {
+        //nous n'avons pas eu un code de réponse ok, mais un autre
+        //voyons ca dans la console
+        console.log("code de réponse:", req.status);
+        //avec un peu plus d'info
+        console.log("code de réponse:", req.statusText);
+
+    }
+
+
+</script>
+
+</html>

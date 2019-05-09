@@ -1,0 +1,14 @@
+var express = require('express');
+        var app = express();
+        var ejs = require('ejs');
+        var url = require('url');
+        var querystring = require('querystring');
+
+
+        app.get('/:utilisateur/creation.html', function(req, res) {
+            res.setHeader('Content-Type', 'text/html');
+            res.render('creation.ejs', { utilisateur : req.params.utilisateur });
+        });
+
+
+        app.listen(8080);
